@@ -1,3 +1,7 @@
-Django
+Django>=4.2
 djangorestframework
-vercel
+gunicorn
+whitenoise
+dj-database-url
+psycopg2-binary
+python-dotenv
