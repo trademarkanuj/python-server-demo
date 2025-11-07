@@ -1,4 +1,4 @@
 from django.http import JsonResponse
 
 def index(request):
-    return JsonResponse({"message": "API is working!"})
+    return JsonResponse({"message": "Working Fine!"})
