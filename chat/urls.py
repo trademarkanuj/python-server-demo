@@ -1,3 +1,3 @@
 from django.urls import path
-from .views import ChatListCreate
-urlpatterns=[ path("messages/",ChatListCreate.as_view()) ]
+from .views import ChatView
+urlpatterns=[ path("messages/",ChatView.as_view()) ]

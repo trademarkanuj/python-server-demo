@@ -1,10 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Message
-from .serializers import MessageSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+
+
+# Temporary memory message storage
+messages = []
 
 
 def bot_reply(text):
@@ -19,24 +21,22 @@ def bot_reply(text):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class ChatListCreate(APIView):
+class ChatView(APIView):
 
     def get(self, request):
-        msgs = Message.objects.all()
-        return Response(MessageSerializer(msgs, many=True).data)
+        return Response(messages, status=200)
 
     def post(self, request):
         text = request.data.get("content", "")
-        if not text:
-            return Response({"error": "content required"}, status=400)
 
-        user = Message.objects.create(role="user", content=text)
-        bot = Message.objects.create(role="bot", content=bot_reply(text))
+        user_msg = {"role": "user", "content": text}
+        bot_msg = {"role": "bot", "content": bot_reply(text)}
+
+        # store in memory
+        messages.append(user_msg)
+        messages.append(bot_msg)
 
         return Response(
-            {
-                "user": MessageSerializer(user).data,
-                "bot": MessageSerializer(bot).data,
-            },
-            status=status.HTTP_201_CREATED,
+            {"user": user_msg, "bot": bot_msg},
+            status=status.HTTP_201_CREATED
         )
